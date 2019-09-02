@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29021.104
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enyim.Corn", "src\Enyim.Corn\Enyim.Corn.csproj", "{FC2479CB-8D67-400B-A2B6-5EE7439C470D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{29829963-E7FA-412B-BD08-135552D440E7}"
+	ProjectSection(SolutionItems) = preProject
+		build\Clean.targets = build\Clean.targets
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		GlobalSuppressions.cs = GlobalSuppressions.cs
+		build\GlobalSuppressions.targets = build\GlobalSuppressions.targets
+		build\Nuget.props = build\Nuget.props
+		build\Nuget.targets = build\Nuget.targets
+		build\SignAssembly.props = build\SignAssembly.props
+		build\Version.props = build\Version.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Diagnostics|Any CPU = Diagnostics|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC2479CB-8D67-400B-A2B6-5EE7439C470D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC2479CB-8D67-400B-A2B6-5EE7439C470D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC2479CB-8D67-400B-A2B6-5EE7439C470D}.Diagnostics|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC2479CB-8D67-400B-A2B6-5EE7439C470D}.Diagnostics|Any CPU.Build.0 = Debug|Any CPU
+		{FC2479CB-8D67-400B-A2B6-5EE7439C470D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC2479CB-8D67-400B-A2B6-5EE7439C470D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8E3E1175-BB0D-4E70-A3EC-9F1E52ABC83F}
+	EndGlobalSection
+EndGlobal

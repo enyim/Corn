@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>Enyim.Corn</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyName>Enyim.Corn</AssemblyName>
+    <AssemblyTitle>Enyim.Corn</AssemblyTitle>
+    <Description>CRON expression parser for .NET Core</Description>
+    <IsPackable>true</IsPackable>
+    <PackageTags>enyim cron corn expression parser</PackageTags>
+  </PropertyGroup>
+
+</Project>

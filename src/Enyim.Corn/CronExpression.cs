@@ -106,52 +106,71 @@ namespace Enyim.Corn
 			result = DateTime.MinValue;
 			var calendar = CultureInfo.CurrentCulture.Calendar;
 
-			var startYear = instant.Year;
-			var startMonth = instant.Month;
-			var startDay = instant.Day;
-			var startHour = instant.Hour;
-			var startMinute = instant.Minute;
-
-			var newYear = startYear;
-			var newMonth = startMonth;
-			var newDay = startDay;
-			var newHour = startHour;
-			var newMinute = startMinute;
+			var newYear = instant.Year;
+			var newMonth = instant.Month;
+			var newDayOfMonth = instant.Day;
+			var newHour = instant.Hour;
+			var newMinute = instant.Minute;
 
 			while (true)
 			{
-				if ((!acceptCurrent || !ruleMinute.IsNthBitSet(newMinute))
-					&& NextOrReset(ruleMinute, ref newMinute))
+				// when a segment rolls over, we increment the next segment to "force" it into the next allowed value
+				// and reset the previous segment(s) to its start value
+				// '... 10:10' + '* * * 12 *' -> 12:00 and not 12:11
+
+				// minute
+				if (!acceptCurrent || !ruleMinute.IsNthBitSet(newMinute))
 				{
-					newHour++;
+					if (NextOrReset(ruleMinute, ref newMinute))
+					{
+						newHour++;
+					}
 				}
 
-				if (!ruleHour.IsNthBitSet(newHour)
-					&& NextOrReset(ruleHour, ref newHour))
+				// hour
+				if (!ruleHour.IsNthBitSet(newHour))
 				{
-					newDay++;
+					if (NextOrReset(ruleHour, ref newHour))
+					{
+						newDayOfMonth++;
+					}
+
+					newMinute = ruleMinute.TrailingZeroCount();
 				}
 
-				if (!ruleDayOfMonth.IsNthBitSet(newDay)
-					&& NextOrReset(ruleDayOfMonth, ref newDay))
+				// day
+				if (!ruleDayOfMonth.IsNthBitSet(newDayOfMonth))
 				{
-					newMonth++;
+					if (NextOrReset(ruleDayOfMonth, ref newDayOfMonth))
+					{
+						newMonth++;
+					}
+
+					newMinute = ruleMinute.TrailingZeroCount();
+					newHour = ruleHour.TrailingZeroCount();
 				}
 
-				if (!ruleMonth.IsNthBitSet(newMonth)
-					&& NextOrReset(ruleMonth, ref newMonth))
+				// month
+				if (!ruleMonth.IsNthBitSet(newMonth))
 				{
-					newYear++;
+					if (NextOrReset(ruleMonth, ref newMonth))
+					{
+						newYear++;
+					}
+
+					newMinute = ruleMinute.TrailingZeroCount();
+					newHour = ruleHour.TrailingZeroCount();
+					newDayOfMonth = ruleDayOfMonth.TrailingZeroCount();
 				}
 
 				// handles the case where the expression never matches, e.g. * * 31 2 * (== every minute on Febr 31th)
 				// TODO find invalid dates quicker than iterating the whole space
 				if (newYear > DateTime.MaxValue.Year) return false;
 
-				if (newDay <= calendar.GetDaysInMonth(newYear, newMonth)
-						&& ruleDayOfWeek.IsNthBitSet(DateTimeHelpers.QuickDayOfWeekNoChecks(newYear, newMonth, newDay)))
+				if (newDayOfMonth <= calendar.GetDaysInMonth(newYear, newMonth)
+						&& ruleDayOfWeek.IsNthBitSet(DateTimeHelpers.QuickDayOfWeekNoChecks(newYear, newMonth, newDayOfMonth)))
 				{
-					result = new DateTime(newYear, newMonth, newDay, newHour, newMinute, 0, instant.Kind);
+					result = new DateTime(newYear, newMonth, newDayOfMonth, newHour, newMinute, 0, instant.Kind);
 					return true;
 				}
 			}

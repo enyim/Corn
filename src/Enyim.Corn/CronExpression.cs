@@ -31,7 +31,7 @@ namespace Enyim.Corn
 		{
 			if (value.Kind != DateTimeKind.Utc) throw new ArgumentOutOfRangeException("Kind must be Utc");
 
-			return TryGetNextInstant(value, out next);
+			return TryGetNextInstant(value, false, out next);
 		}
 
 		public bool TryGetNext(DateTimeOffset value, TimeZoneInfo tz, out DateTimeOffset result)
@@ -53,7 +53,7 @@ namespace Enyim.Corn
 				// is DST?
 				if (otherOffset != value.Offset)
 				{
-					if (!TryGetNextInstant(current, out var guess, acceptCurrent)) return false;
+					if (!TryGetNextInstant(current, acceptCurrent, out var guess)) return false;
 					if (guess < periodEndValue)
 					{
 						result = new DateTimeOffset(guess, periodEndOffset);
@@ -70,7 +70,7 @@ namespace Enyim.Corn
 				if (hasInterval)
 				{
 					// iterate the transition period
-					if (!TryGetNextInstant(current, out var guess, acceptCurrent)) return false;
+					if (!TryGetNextInstant(current, acceptCurrent, out var guess)) return false;
 					if (guess < periodEndValue)
 					{
 						result = new DateTimeOffset(guess, otherOffset);
@@ -84,7 +84,7 @@ namespace Enyim.Corn
 
 			while (true)
 			{
-				if (!TryGetNextInstant(current, out var retval, acceptCurrent)) return false;
+				if (!TryGetNextInstant(current, acceptCurrent, out var retval)) return false;
 
 				if (tz.IsInvalidTime(retval))
 				{
@@ -101,7 +101,7 @@ namespace Enyim.Corn
 		}
 
 		// acceptCurrent: if the instant matches the expression it should not be incremented
-		private bool TryGetNextInstant(DateTime instant, out DateTime result, bool acceptCurrent = false)
+		private bool TryGetNextInstant(DateTime instant, bool acceptCurrent, out DateTime result)
 		{
 			result = DateTime.MinValue;
 			var calendar = CultureInfo.CurrentCulture.Calendar;
@@ -144,7 +144,8 @@ namespace Enyim.Corn
 					newYear++;
 				}
 
-				// handles case where expression never matches, e.g. * * 31 2 * (== every minute on Febr 31th)
+				// handles the case where the expression never matches, e.g. * * 31 2 * (== every minute on Febr 31th)
+				// TODO find invalid dates quicker than iterating the whole space
 				if (newYear > DateTime.MaxValue.Year) return false;
 
 				if (newDay <= calendar.GetDaysInMonth(newYear, newMonth)
